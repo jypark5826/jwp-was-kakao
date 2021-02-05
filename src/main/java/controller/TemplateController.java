@@ -2,12 +2,11 @@ package controller;
 
 import http.HttpResponse;
 import org.springframework.http.HttpStatus;
+import utils.Dispatcher;
 
 public class TemplateController {
-    public static final String TEMPLATES = "./templates";
-
-    public static Handler templateHandler = (request) -> new HttpResponse.Builder()
+    public static Handler templateHandler = (request) -> HttpResponse.builder()
             .status(HttpStatus.OK)
-            .body(TEMPLATES + request.getUri())
+            .body(Dispatcher.TEMPLATES + request.getUri())
             .build();
 }

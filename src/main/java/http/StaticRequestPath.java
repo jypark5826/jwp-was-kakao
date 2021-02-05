@@ -9,7 +9,7 @@ public enum StaticRequestPath {
         this.path = path;
     }
 
-    public String getPath() {
-        return path;
+    public boolean startsWith(String path) {
+        return path.startsWith(this.path);
     }
 }

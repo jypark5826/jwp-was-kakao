@@ -2,14 +2,12 @@ package controller;
 
 import http.HttpResponse;
 import org.springframework.http.HttpStatus;
+import utils.Dispatcher;
 
 public class StaticController {
-    public static final String TEXT_CSS_CHARSET_UTF_8 = "text/css;charset=utf-8";
-    public static final String STATIC = "./static";
-
-    public static Handler staticHandler = (request) -> new HttpResponse.Builder()
+    public static Handler staticHandler = (request) -> HttpResponse.builder()
             .status(HttpStatus.OK)
-            .contentType(TEXT_CSS_CHARSET_UTF_8)
-            .body(STATIC + request.getUri())
+            .contentType(String.format("%s;%s", Dispatcher.TEXT_CSS, Dispatcher.CHARSET_UTF_8))
+            .body(Dispatcher.STATIC + request.getUri())
             .build();
 }

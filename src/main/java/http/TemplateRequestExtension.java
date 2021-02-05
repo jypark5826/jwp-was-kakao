@@ -9,7 +9,8 @@ public enum TemplateRequestExtension {
         this.extension = extension;
     }
 
-    public String getExtension() {
-        return extension;
+
+    public boolean endsWith(String extension) {
+        return extension.endsWith(this.extension);
     }
 }

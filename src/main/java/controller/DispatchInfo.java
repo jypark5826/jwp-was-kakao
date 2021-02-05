@@ -45,14 +45,14 @@ public enum DispatchInfo {
         return this.equals(Template)
                 && request.hasSameMethod(httpRequest)
                 && Arrays.stream(TemplateRequestExtension.values())
-                    .anyMatch(extension -> request.endsWith(extension.getExtension()));
+                    .anyMatch(extension -> extension.endsWith(request.getUri()));
     }
 
     public boolean matchWithStaticRequest(HttpRequest request) {
         return this.equals(Static)
                 && request.hasSameMethod(httpRequest)
                 && Arrays.stream(StaticRequestPath.values())
-                    .anyMatch(path -> request.startsWith(path.getPath()));
+                    .anyMatch(path -> path.startsWith(request.getUri()));
     }
 
     public boolean matchWithRequest(HttpRequest request) {

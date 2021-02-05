@@ -53,7 +53,7 @@ class HttpRequestTest {
         HttpRequest request = new HttpRequest(RequestMethod.GET, "/css/styles.css");
         StaticRequestPath path = StaticRequestPath.CSS;
 
-        assertThat(request.startsWith(path.getPath())).isTrue();
+        assertThat(path.startsWith(request.getUri())).isTrue();
     }
 
     @Test
@@ -61,6 +61,6 @@ class HttpRequestTest {
         HttpRequest request = new HttpRequest(RequestMethod.GET, "/index.html");
         TemplateRequestExtension extension = TemplateRequestExtension.HTML;
 
-        assertThat(request.endsWith(extension.getExtension())).isTrue();
+        assertThat(extension.endsWith(request.getUri())).isTrue();
     }
 }

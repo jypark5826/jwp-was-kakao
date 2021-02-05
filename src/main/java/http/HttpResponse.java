@@ -51,6 +51,10 @@ public class HttpResponse {
         return body;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         public static final String HTTP_VERSION = "HTTP/1.1";
         public static final String CONTENT_TYPE = "Content-Type";

@@ -21,7 +21,7 @@ class HttpResponseTest {
 
     @BeforeEach
     void setUp() throws IOException, URISyntaxException {
-        response = new HttpResponse.Builder()
+        response = HttpResponse.builder()
                 .status(HttpStatus.OK)
                 .contentType("text/html;charset=utf-8")
                 .body("./templates/index.html")

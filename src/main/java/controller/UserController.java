@@ -8,16 +8,12 @@ import http.HttpResponse;
 import model.Session;
 import model.User;
 import org.springframework.http.HttpStatus;
+import utils.Dispatcher;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserController {
-    private static final String INDEX_HTML = "/index.html";
-    private static final String USER_FORM_HTML = "/user/form.html";
-    private static final String LOGIN_FAILED_HTML = "/user/login_failed.html";
-    private static final String USER_LOGIN_HTML = "/user/login.html";
-    private static final String TEXT_HTML_CHARSET_UTF_8 = "text/html;charset=utf-8";
     private static final String USER_ID = "userId";
     private static final String PASSWORD = "password";
     private static final String NAME = "name";
@@ -27,93 +23,65 @@ public class UserController {
     public static final String USERS = "users";
 
     public static Handler createUserHandler = (request) -> {
-        try {
-            Body body = request.getBody();
+        Body body = request.getBody();
 
-            User user = new User(body.get(USER_ID),
-                    body.get(PASSWORD),
-                    body.get(NAME),
-                    body.get(EMAIL));
-            DataBase.addUser(user);
+        User user = new User(body.get(USER_ID),
+                body.get(PASSWORD),
+                body.get(NAME),
+                body.get(EMAIL));
+        DataBase.addUser(user);
 
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(INDEX_HTML)
-                    .build();
-        } catch (IllegalArgumentException e) {
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(USER_FORM_HTML)
-                    .build();
-        }
+        return HttpResponse.builder()
+                .status(HttpStatus.FOUND)
+                .redirect(Dispatcher.INDEX_HTML)
+                .build();
     };
 
     public static Handler loginUserHandler = (request) -> {
-        try {
-            Body body = request.getBody();
-            User user = DataBase.findUserById(body.get(USER_ID));
-            user.verifyPassword(body.get(PASSWORD));
+        Body body = request.getBody();
+        User user = DataBase.findUserById(body.get(USER_ID));
+        user.verifyPassword(body.get(PASSWORD));
 
-            Session session = DataBase.addSession();
-            session.setAttribute(USER, user);
+        Session session = DataBase.addSession();
+        session.setAttribute(USER, user);
 
-            Cookie cookie = new Cookie(SESSION, session.getId());
-            cookie.setPath("/");
+        Cookie cookie = new Cookie(SESSION, session.getId());
+        cookie.setPath("/");
 
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(INDEX_HTML)
-                    .cookie(cookie)
-                    .build();
-        } catch (NullPointerException | IllegalArgumentException e) {
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(LOGIN_FAILED_HTML)
-                    .build();
-        }
+        return HttpResponse.builder()
+                .status(HttpStatus.FOUND)
+                .redirect(Dispatcher.INDEX_HTML)
+                .cookie(cookie)
+                .build();
     };
 
     public static Handler listUserHandler = (request) -> {
-        try {
-            Cookies cookies = request.getCookies();
-            Cookie sessionId = cookies.getCookie(SESSION);
+        Cookies cookies = request.getCookies();
+        Cookie sessionId = cookies.getCookie(SESSION);
 
-            Session session = DataBase.findSessionById(sessionId.getValue());
-            session.getAttribute(USER);
+        Session session = DataBase.findSessionById(sessionId.getValue());
+        session.getAttribute(USER);
 
-            Map<String, Object> params = new HashMap<>();
-            params.put(USERS, DataBase.findAll());
+        Map<String, Object> params = new HashMap<>();
+        params.put(USERS, DataBase.findAllUsers());
 
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.OK)
-                    .contentType(TEXT_HTML_CHARSET_UTF_8)
-                    .body(request.getUri(), params)
-                    .build();
-        } catch (NullPointerException e) {
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(USER_LOGIN_HTML)
-                    .build();
-        }
+        return HttpResponse.builder()
+                .status(HttpStatus.OK)
+                .contentType(String.format("%s;%s", Dispatcher.TEXT_HTML, Dispatcher.CHARSET_UTF_8))
+                .body(request.getUri(), params)
+                .build();
     };
 
     public static Handler logoutUserHandler = (request) -> {
-        try {
-            Cookies cookies = request.getCookies();
-            Cookie sessionId = cookies.getCookie(SESSION);
+        Cookies cookies = request.getCookies();
+        Cookie sessionId = cookies.getCookie(SESSION);
 
-            Session session = DataBase.findSessionById(sessionId.getValue());
-            session.invalidate();
+        Session session = DataBase.findSessionById(sessionId.getValue());
+        session.invalidate();
 
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(INDEX_HTML)
-                    .build();
-        } catch (NullPointerException e) {
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.FOUND)
-                    .redirect(USER_LOGIN_HTML)
-                    .build();
-        }
+        return HttpResponse.builder()
+                .status(HttpStatus.FOUND)
+                .redirect(Dispatcher.INDEX_HTML)
+                .build();
     };
 }

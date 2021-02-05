@@ -1,5 +1,7 @@
 package model;
 
+import utils.Dispatcher;
+
 public class User {
     private String userId;
     private String password;
@@ -27,7 +29,7 @@ public class User {
 
     public void verifyPassword(String password) {
         if (!this.password.equals(password)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(Dispatcher.INCORRECT_PASSWORD);
         }
     }
 

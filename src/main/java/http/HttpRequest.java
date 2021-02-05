@@ -44,12 +44,4 @@ public class HttpRequest {
     public boolean hasSameUri(HttpRequest request) {
         return uri.equals(request.uri);
     }
-
-    public boolean startsWith(String compare) {
-        return uri.startsWith(compare);
-    }
-
-    public boolean endsWith(String compare) {
-        return uri.endsWith(compare);
-    }
 }
